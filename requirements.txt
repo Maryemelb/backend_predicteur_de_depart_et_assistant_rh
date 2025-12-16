@@ -1,0 +1,15 @@
+pandas
+seaborn
+matplotlib
+opencv-python
+fastapi
+sqlalchemy
+pytest
+uvicorn
+sqlalchemy-utils
+python-dotenv
+httpx
+numpy
+pandas
+psycopg2-binary
+jupyter
