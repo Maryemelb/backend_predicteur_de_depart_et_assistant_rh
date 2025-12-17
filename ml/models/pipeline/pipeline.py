@@ -107,7 +107,7 @@ def gridsearch_metrics(pipline_param, gridparam ):
     print(f'recall: {recall}')
     print(f'f1score: {f1score}')
     if pipline_param == pipeline_rf:
-          model_dir= 'saved_model'
+          model_dir= 'ml/models/saved_model'
           os.makedirs(model_dir, exist_ok=True)
           joblib.dump(grid_search_cv.best_estimator_, os.path.join(model_dir, "random_forest_model.pkl"))
     return  f1score
