@@ -14,3 +14,6 @@ pandas
 psycopg2-binary
 jupyter
 scikit-learn
+passlib
+argon2_cffi
+PyJWT
