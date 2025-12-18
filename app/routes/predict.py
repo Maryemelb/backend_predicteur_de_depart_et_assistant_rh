@@ -31,7 +31,10 @@ def predict(employee: employee_schema, request:Request, db:Session= Depends(getd
     employee_df= pd.DataFrame([employee_dict])
     model= joblib.load(model_path)
     prediction= model.predict(employee_df)
-
-    print(prediction)
-    return employee
+    confident= model.predict_proba(employee_df).max()
+    #add emp to db
+    return {
+        "prediction": int(prediction),
+        "confident": float(confident)
+    }
     

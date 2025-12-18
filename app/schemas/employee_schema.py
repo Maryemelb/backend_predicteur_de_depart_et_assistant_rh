@@ -11,15 +11,11 @@ class employee_schema(BaseModel):
         "Travel_Frequently"
     ]
 
-    DailyRate: int
-
     Department: Literal[
         "Sales",
         "Research & Development",
         "Human Resources"
     ]
-
-    DistanceFromHome: int
     Education: int
 
     EducationField: Literal[
@@ -30,7 +26,6 @@ class employee_schema(BaseModel):
         "Human Resources",
         "Other"
     ]
-
    
     EnvironmentSatisfaction: int
 
@@ -60,18 +55,14 @@ class employee_schema(BaseModel):
     ]
 
     MonthlyIncome: int
-    NumCompaniesWorked: int
 
     OverTime: Literal["Yes", "No"]
 
-    PercentSalaryHike: int
     PerformanceRating: int
     RelationshipSatisfaction: int
     StockOptionLevel: int
     TotalWorkingYears: int
-    TrainingTimesLastYear: int
     WorkLifeBalance: int
     YearsAtCompany: int
     YearsInCurrentRole: int
-    YearsSinceLastPromotion: int
     YearsWithCurrManager: int
