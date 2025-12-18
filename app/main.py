@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from sqlalchemy_utils import database_exists, create_database
 from app.routes.register import router as register_router
 from app.routes.login import router as login_router
+from app.routes.predict import router as predict_router
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import uvicorn
@@ -35,3 +36,4 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(register_router)
 app.include_router(login_router)
+app.include_router(predict_router)
