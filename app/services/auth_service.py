@@ -6,9 +6,10 @@ from dotenv import load_dotenv
 from passlib.context import CryptContext
 load_dotenv()
 
-def create_token(name):
+def create_token(name, id):
     payload={
-           "username" :name
+           "username" :name,
+           "id": id
     }
     return jwt.encode(payload, os.getenv("jwt_secret"), algorithm="HS256")
 
