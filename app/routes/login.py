@@ -35,7 +35,7 @@ def login(user: user_schema, response:Response, db:Session= Depends(getdb)):
              raise HTTPException(status_code=400, detail='user not exist')
           if not decrypt_password(user.password, user_db.passwordhash):
               raise HTTPException(status_code=401, detail='wrong password')
-          token = create_token(user.username)
+          token = create_token(user_db.username, user_db.id)
           response.set_cookie(
                key='token',
                value= token,
