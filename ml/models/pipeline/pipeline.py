@@ -18,7 +18,6 @@ import joblib
 BASE_DIR= os.path.dirname(os.path.abspath(__file__))
 data_path=os.path.join(BASE_DIR, '..', 'dataset', 'employees_dataset.csv')
 
-# data= pd.read_csv(data_path)
 
 def cleaning(data):
     data['Attrition']= data['Attrition'].map({'No':0, 'Yes':1})
@@ -129,10 +128,9 @@ def gridsearch_metrics(pipline_param, gridparam ,  X_train, X_test, y_train, y_t
     print(f'accuracy: {accuracy}')
     print(f'recall: {recall}')
     print(f'f1score: {f1score}')
-    if pipline_param == "pipeline_lr":
-          model_dir= 'ml/models/saved_model'
-          os.makedirs(model_dir, exist_ok=True)
-          joblib.dump(grid_search_cv.best_estimator_, os.path.join(model_dir, "model.pkl"))
+    model_dir= 'ml/models/saved_model'
+    os.makedirs(model_dir, exist_ok=True)
+    joblib.dump(grid_search_cv.best_estimator_, os.path.join(model_dir, "model.pkl"))
     
 
 # pipeline_rf,param_grid_rf,pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test= pre_processing(data)
@@ -150,3 +148,8 @@ def gridsearch_metrics(pipline_param, gridparam ,  X_train, X_test, y_train, y_t
 
 # print("Logistique regression: ")
 # gridsearch_metrics(pipeline_lr, param_grid_lr)
+data= pd.read_csv(data_path)
+pipeline_rf,param_grid_rf,pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test= pre_processing(data)
+
+print("Logistique regression: ")
+gridsearch_metrics(pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test)
