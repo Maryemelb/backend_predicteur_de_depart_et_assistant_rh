@@ -5,9 +5,6 @@ from typing import Literal
 
 class employee_schema(BaseModel):
     Age: int
-
-    Attrition: Literal["Yes", "No"]
-
     BusinessTravel: Literal[
         "Non-Travel",
         "Travel_Rarely",
@@ -34,13 +31,11 @@ class employee_schema(BaseModel):
         "Other"
     ]
 
-    EmployeeCount: int
-    EmployeeNumber: int
+   
     EnvironmentSatisfaction: int
 
     Gender: Literal["Male", "Female"]
 
-    HourlyRate: int
     JobInvolvement: int
     JobLevel: int
 
@@ -65,17 +60,13 @@ class employee_schema(BaseModel):
     ]
 
     MonthlyIncome: int
-    MonthlyRate: int
     NumCompaniesWorked: int
-
-    Over18: Literal["Y"]
 
     OverTime: Literal["Yes", "No"]
 
     PercentSalaryHike: int
     PerformanceRating: int
     RelationshipSatisfaction: int
-    StandardHours: int
     StockOptionLevel: int
     TotalWorkingYears: int
     TrainingTimesLastYear: int

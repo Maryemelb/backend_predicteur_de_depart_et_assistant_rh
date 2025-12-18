@@ -72,7 +72,7 @@ X_num= ['DistanceFromHome', 'MonthlyIncome', 'DailyRate','NumCompaniesWorked', '
 preprocessor= ColumnTransformer(
    transformers= [
       ('num', RobustScaler(), X_num),
-      ('cat', OneHotEncoder(), X_cat)
+      ('cat', OneHotEncoder(handle_unknown='ignore'), X_cat)
    ]
 )
 pipeline_rf= Pipeline([
@@ -109,10 +109,12 @@ def gridsearch_metrics(pipline_param, gridparam ):
     if pipline_param == pipeline_rf:
           model_dir= 'ml/models/saved_model'
           os.makedirs(model_dir, exist_ok=True)
-          joblib.dump(grid_search_cv.best_estimator_, os.path.join(model_dir, "random_forest_model.pkl"))
+          joblib.dump(grid_search_cv.best_estimator_, os.path.join(model_dir, "model.pkl"))
     return  f1score
-print("Random forest: ")
-gridsearch_metrics(pipeline_rf, param_grid_rf)
 
-print("Logistique regression: ")
-gridsearch_metrics(pipeline_lr, param_grid_lr)
+
+# print("Random forest: ")
+# gridsearch_metrics(pipeline_rf, param_grid_rf)
+
+# print("Logistique regression: ")
+# gridsearch_metrics(pipeline_lr, param_grid_lr)
