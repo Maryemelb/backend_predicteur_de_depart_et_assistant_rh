@@ -1,8 +1,8 @@
 import pytest
-
+import pandas as pd
 from app.services.ml_service import chargeModel_prediction
 @pytest.fixture
-def employee_df():
+def employee():
     return {
   "Age": 15,
   "BusinessTravel": "Non-Travel",
@@ -28,8 +28,13 @@ def employee_df():
   "YearsInCurrentRole": 0,
   "YearsWithCurrManager": 0
 }
-def test_ml_service(employee_df):
-    prediction, confident= chargeModel_prediction(employee_df)
+def test_ml_service(employee):
+    df = pd.DataFrame([employee])
+    prediction, confident= chargeModel_prediction(df)
     assert prediction is not None
     assert confident is not None
-  
+    assert  int(prediction) ==1 or int(prediction)== 0
+    assert  float(confident)>= 0 or float(confident) <= 0
+
+
+
