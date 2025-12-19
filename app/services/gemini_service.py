@@ -18,14 +18,68 @@ WorkLifeBalance, YearsAtCompany, YearsInCurrentRole, YearsWithCurrManager):
    prompt= f"""Agis comme un expert RH. 
 
    Voici les informations sur l’employé :
-   - Age : {Age}
-   - Département : {BusinessTravel}
-   - Role : [JobRole]
+      Âge : {Age}
+
+      Voyages professionnels : {BusinessTravel}
+
+      Département : {Department}
+
+      Niveau d’éducation : {Education}
+
+      Domaine d’éducation : {EducationField}
+
+      Numéro d’employé : {EmployeeNumber}
+
+      Satisfaction de l’environnement : {EnvironmentSatisfaction}
+
+      Genre : {Gender}
+
+      Implication au travail : {JobInvolvement}
+
+      Niveau de poste : {JobLevel}
+
+      Rôle du poste : {JobRole}
+
+      Satisfaction au travail : {JobSatisfaction}
+
+      Statut marital : {MaritalStatus}
+
+      Revenu mensuel : {MonthlyIncome}
+
+      Heures supplémentaires : {OverTime}
+
+      Évaluation de la performance : {PerformanceRating}
+
+      Satisfaction relationnelle : {RelationshipSatisfaction}
+
+      Niveau d’options d’actions : {StockOptionLevel}
+
+      Total des années d’expérience : {TotalWorkingYears}
+
+      Équilibre vie professionnelle / personnelle : {WorkLifeBalance}
+
+      Ancienneté dans l’entreprise : {YearsAtCompany}
+
+      Ancienneté dans le poste actuel : {YearsInCurrentRole}
+
+      Ancienneté avec le manager actuel : {YearsWithCurrManager}
 
    Contexte : ce salarié a un risque élevé de "churn_probability" de départ selon le modèle ML.  
 
-    Tache : propose 3 actions concrètes et personnalisées pour le retenir dans l’entreprise, en tenant compte de son role, sa satisfaction, sa performance et son équilibre vie professionnelle/personnelle.  
+    Tache : 
+    -propose 4 actions concrètes et personnalisées pour le retenir dans l’entreprise, en tenant compte de son role, sa satisfaction, sa performance et son équilibre vie professionnelle/personnelle.  
      Rédige les actions de façon claire et opérationnelle pour un manager RH.
+    - "retention_plan" doit être une LISTE (array) de 4 chaînes de caractères
+    EXEMPLE :
+  
+          {{
+          "retention_plan": [
+            "Action 1",
+            "Action 2",
+            "Action 3",
+            "Action 4"
+          ]
+        }}
 
      """
    response = client.models.generate_content(
