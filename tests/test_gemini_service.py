@@ -3,7 +3,7 @@ import pytest
 
 from unittest.mock import Mock
 
-from app.services.gemini_service import retention
+from app.services.gemini_service import Retention, retention
 
 @pytest.fixture
 def employee():
@@ -32,15 +32,22 @@ def employee():
   "YearsInCurrentRole": 0,
   "YearsWithCurrManager": 0
 }
-def test_retention(mocker):
+def test_retention(mocker, employee):
      fake_response= mocker.Mock()
-     fake_response.text= "resumed text"
+     fake_response.text= {
+     "retention_plan": [
+        "Action 1",
+        "Action 2",
+        "Action 3",
+        "Action 4"
+    ]
+}
 
      fake_client= mocker.Mock()
      mocker.patch('app.services.gemini_service.genai.Client', return_value= fake_client)
 
      fake_client.models.generate_content.return_value = fake_response
   
-     result= retention(employee.Age, employee.BusinessTravel, employee.Department, employee.Education, employee.EducationField, employee.EnvironmentSatisfaction, employee.Gender, employee.JobInvolvement, employee.JobLevel, employee.JobRole, employee.JobSatisfaction, employee.MaritalStatus, employee.MonthlyIncome, employee.OverTime, employee.PerformanceRating, employee.RelationshipSatisfaction, employee.StockOptionLevel, employee.TotalWorkingYears, employee.WorkLifeBalance, employee.YearsAtCompany, employee.YearsInCurrentRole, employee.YearsWithCurrManager, employee.Attrition)
-     assert result == fake_response.text
-     assert isinstance(result, str)
+     result = Retention.model_validate(fake_response.text) 
+     assert result.retention_plan == fake_response.text["retention_plan"]
+

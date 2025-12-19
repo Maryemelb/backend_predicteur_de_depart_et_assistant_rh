@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  backend:
+    build: .
+    image: "retention_ai_app_backend"
+    ports: 
+      - "8000:8000"
+    environment:
+      - DATABASE_NAME=prediction_depart
+      - DATABASE_PASSWORD=1111
+      - DATABASE_USER=postgres
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - NEXT_PUBLIC_BACKEND_API=http://backend:8000
+    depends_on:
+      - db
+
+  frontend:
+    build: ../frontend_analyse_contextuelle
+    image: "retention_ai_app_frontend"
+    ports: 
+      - "3001:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_API=http://localhost:8000
+
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+      POSTGRES_DB: prediction_depart
+    ports:
+       - "5432:5432"
