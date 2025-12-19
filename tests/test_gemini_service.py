@@ -1,6 +1,10 @@
+
 import pytest
-import pandas as pd
-from app.services.ml_service import chargeModel_prediction
+
+from unittest.mock import Mock
+
+from app.services.gemini_service import Retention, retention
+
 @pytest.fixture
 def employee():
     return {
@@ -28,13 +32,22 @@ def employee():
   "YearsInCurrentRole": 0,
   "YearsWithCurrManager": 0
 }
-def test_ml_service(employee):
-    df = pd.DataFrame([employee])
-    prediction, confident= chargeModel_prediction(df)
-    assert prediction is not None
-    assert confident is not None
-    assert  int(prediction) ==1 or int(prediction)== 0
-    assert  float(confident)>= 0 or float(confident) <= 0
+def test_retention(mocker, employee):
+     fake_response= mocker.Mock()
+     fake_response.text= {
+     "retention_plan": [
+        "Action 1",
+        "Action 2",
+        "Action 3",
+        "Action 4"
+    ]
+}
 
+     fake_client= mocker.Mock()
+     mocker.patch('app.services.gemini_service.genai.Client', return_value= fake_client)
 
+     fake_client.models.generate_content.return_value = fake_response
+  
+     result = Retention.model_validate(fake_response.text) 
+     assert result.retention_plan == fake_response.text["retention_plan"]
 

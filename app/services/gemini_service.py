@@ -1,10 +1,11 @@
+from typing import List
 from google import genai
 from google.genai import types
 import os
 from pydantic import BaseModel, Field
 
 class Retention(BaseModel):
-     recipe_name: str = Field(description="The retention plan.")
+     retention_plan: List[str]
     
 
 def retention(Age, BusinessTravel, Department, Education, EducationField,
