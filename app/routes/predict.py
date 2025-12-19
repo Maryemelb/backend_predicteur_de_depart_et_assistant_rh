@@ -3,7 +3,6 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
-import joblib
 from sqlalchemy.orm import Session
 from app.db.dependencies import getdb
 from app.schemas.employee_schema import employee_schema
@@ -13,12 +12,13 @@ from app.models.predictions_history import predictions_history as PridictionHist
 import os
 import sys
 import pandas as pd
+
+from app.services.ml_service import chargeModel_prediction
 router= APIRouter(
     prefix="/predict",
     tags=["Prediction"] 
 )
-WORKDIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-model_path= os.path.join(WORKDIR, "ml","models", "saved_model", "model.pkl")
+
 
 @router.post('/')
 async def predict(employee: employee_schema, request:Request,response:RedirectResponse, db:Session= Depends(getdb)):
@@ -31,10 +31,8 @@ async def predict(employee: employee_schema, request:Request,response:RedirectRe
 
     employee_dict= employee.model_dump()
     employee_df= pd.DataFrame([employee_dict])
-    model= joblib.load(model_path)
-    prediction= model.predict(employee_df)
-    confident= model.predict_proba(employee_df).max()
-     
+
+    prediction, confident= chargeModel_prediction(employee_df)     
     #add emp to db
     emp_db= EmpModel(**employee_dict, Attrition=int(prediction))
     db.add(emp_db)
