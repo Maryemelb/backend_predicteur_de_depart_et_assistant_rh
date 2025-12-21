@@ -120,7 +120,7 @@ def gridsearch_metrics(pipline_param, gridparam ,  X_train, X_test, y_train, y_t
     grid_search_cv=GridSearchCV(pipline_param, gridparam, cv=5,n_jobs=-1,verbose=2, scoring='f1')
     grid_search_cv.fit(X_train, y_train)
     y_predict= grid_search_cv.predict(X_test)
-
+    y_pred_proba = grid_search_cv.predict_proba(X_test)[:, 1] 
     accuracy= accuracy_score(y_test, y_predict)
     recall= recall_score(y_test, y_predict)
     f1score= f1_score(y_test, y_predict)
@@ -131,7 +131,7 @@ def gridsearch_metrics(pipline_param, gridparam ,  X_train, X_test, y_train, y_t
     model_dir= 'ml/models/saved_model'
     os.makedirs(model_dir, exist_ok=True)
     joblib.dump(grid_search_cv.best_estimator_, os.path.join(model_dir, "model.pkl"))
-    
+    return y_pred_proba
 
 # pipeline_rf,param_grid_rf,pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test= pre_processing(data)
 # print(y_test)
@@ -148,8 +148,11 @@ def gridsearch_metrics(pipline_param, gridparam ,  X_train, X_test, y_train, y_t
 
 # print("Logistique regression: ")
 # gridsearch_metrics(pipeline_lr, param_grid_lr)
-data= pd.read_csv(data_path)
-pipeline_rf,param_grid_rf,pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test= pre_processing(data)
 
-print("Logistique regression: ")
-gridsearch_metrics(pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test)
+
+# data= pd.read_csv(data_path)
+# pipeline_rf,param_grid_rf,pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test= pre_processing(data)
+
+# print("Logistique regression: ")
+# y_predict_proba_lr= gridsearch_metrics(pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test)
+# print(y_predict_proba_lr)

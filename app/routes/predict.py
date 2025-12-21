@@ -53,7 +53,7 @@ async def predict(employee: employee_schema, request:Request,response:RedirectRe
             db.refresh(new_churn_case)
     if float(confident) >= 0.5:
        
-         response= RedirectResponse(url=f'/retention_generation/{emp_id.id}', status_code=307)
+         response= RedirectResponse(url=f'/retention_generation/{emp_id.id}/{confident}', status_code=307)
          response.set_cookie(key='token',value=request.cookies.get('token'))
          
     return response
