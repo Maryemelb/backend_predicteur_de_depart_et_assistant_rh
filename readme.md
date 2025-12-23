@@ -112,26 +112,29 @@ Construire un modèle capable de prédire la probabilité de départ volontaire 
 
 | Modèle                | Accuracy | Recall | F1-score |
 | --------------------- | -------- | ------ | -------- |
-| Random Forest         | 0.8458   | 0.1818 | 0.2917   |
-| Régression Logistique | 0.8413   | 0.1429 | 0.2391   |
+| Random Forest         | 0.8707   | 0.2121 | 0.3294   |
+| Régression Logistique | 0.7800   | 0.6667 | 0.4757   |
+
 
 ---
 
 #### Après application de RobustScaler
 
-| Modèle                | Accuracy   | Recall     | F1-score   |
-| --------------------- | ---------- | ---------- | ---------- |
-| Random Forest         | 0.8685     | 0.1803     | 0.2750     |
-| Régression Logistique | **0.8776** | **0.2131** | **0.3250** |
+| Modèle                | Accuracy | Recall | F1-score |
+| --------------------- | -------- | ------ | -------- |
+| Random Forest         | 0.8753   | 0.2857 | 0.4211   |
+| Régression Logistique | 0.7664   | 0.7571 | 0.5072   |
+
 
 ---
 
 #### Après gestion du déséquilibre avec SMOTE
 
-| Modèle                | Accuracy   | Recall     | F1-score   |
-| --------------------- | ---------- | ---------- | ---------- |
-| Random Forest         | 0.8662     | 0.25       | 0.3656     |
-| Régression Logistique | **0.8730** | **0.3529** | **0.4615** |
+| Modèle                | Accuracy | Recall | F1-score |
+| --------------------- | -------- | ------ | -------- |
+| Random Forest         | 0.8458   | 0.3425 | 0.4237   |
+| Régression Logistique | 0.7846   | 0.7671 | 0.5411   |
+
 
 **Modèle final retenu :** Régression Logistique + RobustScaler + SMOTE
 

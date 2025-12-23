@@ -21,6 +21,7 @@ data_path=os.path.join(BASE_DIR, '..', 'dataset', 'employees_dataset.csv')
 
 def cleaning(data):
     data['Attrition']= data['Attrition'].map({'No':0, 'Yes':1})
+    #I deleted 12 columns
     data= data.drop(columns=['EmployeeCount', 'Over18','DistanceFromHome','StandardHours','YearsSinceLastPromotion', 'TrainingTimesLastYear','PercentSalaryHike','NumCompaniesWorked','DailyRate','HourlyRate','MonthlyRate', 'EmployeeNumber'])
     return data
 
@@ -30,88 +31,60 @@ def split_data(prepared_data):
     X_train, X_test, y_train, y_test= train_test_split(X,y, test_size=0.30)
     return X_train, X_test, y_train, y_test
 
-def training(X_train, X_test, y_train, y_test, model):
-    if model==  RandomForestClassifier:
-              rf= model()
-    else :
-              rf= model()
 
-
-    rf.fit(X_train, y_train)
-    y_predict= rf.predict(X_test)
-    accuracy= accuracy_score(y_test, y_predict)
-    recall= recall_score(y_test, y_predict)
-    f1score= f1_score(y_test, y_predict)
-    print(f'accuracy: {accuracy}')
-    print(f'recall: {recall}')
-    print(f'f1score: {f1score}')
-    return f1score
-
-
-
-# prepared_data= cleaning(data)
-
-# X_train, X_test, y_train, y_test= split_data(prepared_data)
-# X_cat= ['JobRole', 'BusinessTravel', 'Department', 'Education', 'EducationField', 'EnvironmentSatisfaction', 'Gender', 'JobInvolvement','JobLevel', 'JobSatisfaction','MaritalStatus', 'RelationshipSatisfaction' ,'PerformanceRating', 'OverTime','StockOptionLevel', 'WorkLifeBalance']
-# X_num= ['MonthlyIncome', 'TotalWorkingYears', 'YearsAtCompany', 'YearsInCurrentRole', 'YearsWithCurrManager']
-# preprocessor= ColumnTransformer(
-#    transformers= [
-#       ('num', RobustScaler(), X_num),
-#       ('cat', OneHotEncoder(handle_unknown='ignore'), X_cat)
-#    ]
-# )
-# pipeline_rf= Pipeline([
-#    ('preprocessor', preprocessor),
-#    ('random', RandomForestClassifier())
-# ])
-
-# param_grid_rf = {
-#     "random__n_estimators": [100, 300],
-#     "random__max_depth": [None, 30],
-# }
-
-# pipeline_lr= Pipeline([
-#    ('preprocessor', preprocessor),
-#    ('random', RandomForestClassifier())
-# ])
-
-# param_grid_lr = {
-#     "random__n_estimators": [100, 300],
-#     "random__max_depth": [None, 30],
-# }
-
-def pre_processing(data):
+def pre_processing(data, smote, robust):
       data['Attrition']= data['Attrition'].map({'No':0, 'Yes':1})
       data= data.drop(columns=['EmployeeCount', 'Over18','DistanceFromHome','StandardHours','YearsSinceLastPromotion', 'TrainingTimesLastYear','PercentSalaryHike','NumCompaniesWorked','DailyRate','HourlyRate','MonthlyRate', 'EmployeeNumber'])
       X_train, X_test, y_train, y_test= split_data(data)
-      X_cat= ['JobRole', 'BusinessTravel', 'Department', 'Education', 'EducationField', 'EnvironmentSatisfaction', 'Gender', 'JobInvolvement','JobLevel', 'JobSatisfaction','MaritalStatus', 'RelationshipSatisfaction' ,'PerformanceRating', 'OverTime','StockOptionLevel', 'WorkLifeBalance']
+      X_cat= ['JobRole', 'BusinessTravel', 'Department', 'EducationField', 'Gender','JobLevel','MaritalStatus', 'OverTime','StockOptionLevel']
       X_num= ['MonthlyIncome', 'TotalWorkingYears', 'YearsAtCompany', 'YearsInCurrentRole', 'YearsWithCurrManager']
-      preprocessor= ColumnTransformer(
-        transformers= [
-          ('num', RobustScaler(), X_num),
-          ('cat', OneHotEncoder(handle_unknown='ignore'), X_cat)
-   ]
-)
-      pipeline_rf= Pipeline([
-       ('preprocessor', preprocessor),
-       ('random', RandomForestClassifier())
+      if(robust==1):
+            preprocessor= ColumnTransformer(
+            transformers= [
+              ('num', RobustScaler(), X_num),
+             ('cat', OneHotEncoder(handle_unknown='ignore'), X_cat),  
+          ],
+        remainder='passthrough'
+          ) 
+      else:   
+          preprocessor= ColumnTransformer(
+          transformers= [
+             ('cat', OneHotEncoder(handle_unknown='ignore'), X_cat),  
+          ],
+        remainder='passthrough'
+          )         
+      if smote==1:
+              pipeline_rf= Pipeline([
+              ('preprocessor', preprocessor),
+              ('smoting', SMOTE()),
+              ('random', RandomForestClassifier())
+        ])
+              pipeline_lr= Pipeline([
+              ('preprocessor', preprocessor),
+              ('smoting', SMOTE()),
+              ('logistic', LogisticRegression())
+      ])
+      else:
+               pipeline_rf= Pipeline([
+              ('preprocessor', preprocessor),
+              ('random', RandomForestClassifier())
+        ])
+               pipeline_lr= Pipeline([
+              ('preprocessor', preprocessor),
+              ('logistic', LogisticRegression())
 ])
-
       param_grid_rf = {
          "random__n_estimators": [100, 300],
          "random__max_depth": [None, 30],
-}
+        }
 
-      pipeline_lr= Pipeline([
-        ('preprocessor', preprocessor),
-        ('smoting', SMOTE()),
-       ('random', RandomForestClassifier())
-])
+
 
       param_grid_lr = {
-    "random__n_estimators": [100, 300],
-    "random__max_depth": [None, 30],
-}         
+     'logistic__C': [0.1, 1, 10],         
+    'logistic__solver': ['liblinear', 'saga'], 
+    'logistic__class_weight': [None, 'balanced'] 
+        }         
     
       return pipeline_rf,param_grid_rf,pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test
       
@@ -124,31 +97,13 @@ def gridsearch_metrics(pipline_param, gridparam ,  X_train, X_test, y_train, y_t
     accuracy= accuracy_score(y_test, y_predict)
     recall= recall_score(y_test, y_predict)
     f1score= f1_score(y_test, y_predict)
-
     print(f'accuracy: {accuracy}')
     print(f'recall: {recall}')
     print(f'f1score: {f1score}')
     model_dir= 'ml/models/saved_model'
     os.makedirs(model_dir, exist_ok=True)
     joblib.dump(grid_search_cv.best_estimator_, os.path.join(model_dir, "model.pkl"))
-    return y_pred_proba
-
-# pipeline_rf,param_grid_rf,pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test= pre_processing(data)
-# print(y_test)
-# print("Random forest: ")
-# gridsearch_metrics(pipeline_rf, param_grid_rf)
-
-# print("Logistique regression: ")
-# gridsearch_metrics(pipeline_lr, param_grid_lr)
-
-
-
-# print("Random forest: ")
-# gridsearch_metrics(pipeline_rf, param_grid_rf)
-
-# print("Logistique regression: ")
-# gridsearch_metrics(pipeline_lr, param_grid_lr)
-
+    return y_pred_proba, y_predict
 
 # data= pd.read_csv(data_path)
 # pipeline_rf,param_grid_rf,pipeline_lr, param_grid_lr, X_train, X_test, y_train, y_test= pre_processing(data)
