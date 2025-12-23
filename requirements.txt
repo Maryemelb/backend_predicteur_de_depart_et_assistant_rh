@@ -1,7 +1,6 @@
 pandas
 seaborn
 matplotlib
-opencv-python
 fastapi
 sqlalchemy
 pytest
